@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"database/sql"
-
 	configuration "github.com/Satsawat-Rodketkul/domain-user-api/config"
 	_ "github.com/lib/pq"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func DBconnection() {
@@ -18,10 +18,10 @@ func DBconnection() {
 	dbName := configuration.GetConfigValue("DATABASE_NAME")
 	dbMode := configuration.GetConfigValue("DATABASE_SSLMODE")
 
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		dbHost, dbPort, dbUser, dbPassword, dbName, dbMode)
 
-	db, err := sql.Open("postgres", connStr)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Failed to connect database:", err)
